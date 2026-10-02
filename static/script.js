@@ -1,4 +1,4 @@
-const MAX_MS = 600_000;
+const MAX_MS = 1_800_000;
 
 const display = document.getElementById('display');
 const root = document.querySelector('.stopwatch');

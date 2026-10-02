@@ -39,6 +39,7 @@ func serve() (err error) {
 		return err
 	case <-ctx.Done():
 		stop()
+		log.Println("bye")
 	}
 
 	err = srv.Shutdown(context.Background())
@@ -48,5 +49,13 @@ func serve() (err error) {
 func httpHandler() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("GET /", http.FileServer(http.Dir("static")))
-	return mux
+
+	return noStore(mux)
+}
+
+func noStore(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store, must-revalidate")
+		next.ServeHTTP(w, r)
+	})
 }
